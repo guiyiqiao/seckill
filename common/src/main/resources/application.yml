@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+    # 开发环境
+  # datasource:
+    # url: jdbc:mysql://47.105.184.154:3306/seckill?useUnicode=true&characterEncoding=utf8&useSSL=false
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    # username: gyq
+    # password: (he110.#Q)
+    # url: jdbc:mysql:///seckill?useUnicode=true&characterEncoding=utf8&useSSL=false
+    # username: root
+    # password: admin
+  redis:
+    port: 6379
+    database: 0
+    password: redis
+    host: 0.0.0.0
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 1000ms
+    # cache:
+    # type: redis
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    #开启驼峰式命名映射
