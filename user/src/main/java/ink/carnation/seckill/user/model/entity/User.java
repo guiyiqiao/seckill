@@ -1,10 +1,14 @@
 package ink.carnation.seckill.user.model.entity;
 
 import lombok.Data;
+import org.springframework.stereotype.Indexed;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @Author 桂乙侨
@@ -13,12 +17,13 @@ import java.io.Serializable;
  */
 
 @Data
+@Table(name = "user")
 public class User implements Serializable {
     @Id
     @GeneratedValue(generator = "JDBC")
     private Integer id;
 
-    private String nickName;
+    private String userName;
 
     private String password;
 
@@ -27,4 +32,7 @@ public class User implements Serializable {
     private String telephone;
 
     private String salt;
+
+    private Set<Role> roles;
+
 }

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MessageQueueConfig {
 
-    @Bean
+    //@Bean
     public RedisMQConsumerContainer redisMQConsumerContainer(){
         RedisMQConsumerContainer container = new RedisMQConsumerContainer();
         return container;

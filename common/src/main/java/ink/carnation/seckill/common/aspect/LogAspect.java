@@ -32,7 +32,7 @@ public class LogAspect {
      * @param point
      * @return
      */
-    @Around("execution(* ink.carnation.seckill.common.controller.*.*(..))")
+    @Around("execution(* ink.carnation.seckill.common.controller.SeckillController.*(..))")
     public Object checkController(ProceedingJoinPoint point) {
         StringBuffer stringBuffer = new StringBuffer();
         long start = System.currentTimeMillis();
@@ -44,8 +44,8 @@ public class LogAspect {
         Object[] args = point.getArgs();
         stringBuffer.append("请求地址：" + url + "  请求方法 " + method + " 请求 IP：" + ip);
         stringBuffer.append("方法参数：[");
-        for (Object o : point.getArgs()) {
-            stringBuffer.append("  " + o.toString());
+        for (int i = 0; i < args.length;i++) {
+            stringBuffer.append("  参数" + i+" ->"+args[i].toString());
         }
         stringBuffer.append("]");
         try {

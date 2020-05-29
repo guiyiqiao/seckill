@@ -82,24 +82,7 @@ public class ItemOrder implements Serializable {
     private Integer goodsId;
 }
 ```
-用户信息表
-```java
-public class User implements Serializable {
-    @Id
-    @GeneratedValue(generator = "JDBC")
-    private Integer id;
 
-    private String nickName;
-
-    private String password;
-
-    private String email;
-
-    private String telephone;
-
-    private String salt;
-}
-```
 
 
 
@@ -131,3 +114,85 @@ https://www.cnblogs.com/zery/p/11801168.html
 本项目使用了Redis作消息队列，用于处理具体订单的生成
 
 隐藏秒杀地址、限流
+
+## API
+商品列表展示接口 
+GET /seckill/items 
+查询结果集为
+```java
+//映射结果集类
+public class ItemVo {
+    //秒杀商品id
+    private Integer itemId;
+    //所属商品id
+    private Integer goodsId;
+    //double 的秒杀商品价格（秒杀价格）
+    private BigDecimal itemPrice;
+    //秒杀商品库存
+    private Integer itemStock;
+    //秒杀开始时间
+    private Date startDate;
+    //秒杀结束时间
+    private Date endDate;
+    //秒杀状态 0 未开始  1 进行中 2 已结束（这个还没做）
+    private Byte status;
+    //商品名
+    private String goodsName;
+    //商品图片地址，目前存的时字符串，还没搞图片
+    private String goodsImg;
+    //商品细节
+    private String goodsDetail;
+    //类似double 的商品价格（原价）
+    private BigDecimal GoodsPrice;
+    //是否有效，true有效 false 无效
+    private Boolean isValid;
+    //后端乐观锁的版本号，你可以忽略他
+    private Integer version;
+}
+```
+
+## 用户权限设计
+使用apache shiro 框架，JWT(JOSN WEB TOKEN)处理无状态登陆
+，使用Redis缓存token以做到过期时间后失效  
+用户信息表
+```java
+public class User implements Serializable {
+    @Id
+    @GeneratedValue(generator = "JDBC")
+    private Integer id;
+
+    private String nickName;
+
+    private String password;
+
+    private String email;
+
+    private String telephone;
+
+    private String salt;
+}
+```
+角色信息
+```java
+public class Role {
+    private Integer id;
+    private String role;
+
+    private Set<Permission> permissions;
+}
+```
+权限信息
+```java
+public class Permission {
+    private Integer id;
+    private String permission;
+}
+```
+鉴权的流程为下。  
+1.用户登陆之后（user/login），使用密码对账号进行签名生成并返回token并设置过期时间；成功返回加密的AccessToken放在Response Header的Authorization属性中，失败直接返回401错误(帐号或密码不正确)。
+
+2.前端将token保存到本地，并且每次发送请求时都在header上携带token。
+
+3.shiro过滤器拦截到请求并获取header中的token，并提交到自定义realm的doGetAuthenticationInfo方法。
+
+4.通过jwt解码获取token中的用户名，从数据库中查询到密码之后根据密码生成jwt效验器并对token进行验证。
